@@ -18,11 +18,7 @@
     transition: max-width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.container.with-interact {
-    max-width: 1720px;
-}
-
-/* 右側內容區上下並列 */
+/* 右側內容區 */
 .right-content {
     display: flex;
     flex-direction: column;
@@ -30,20 +26,8 @@
     width: 100%;
 }
 
-.container.with-interact .console-panel {
-    height: 300px;
-    min-height: 300px;
-}
-
-.interact-panel {
-    flex-grow: 1;
-    height: calc(100vh - 120px - 300px - 2rem);
-    min-height: 400px;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
 @media (max-width: 1024px) {
-    .container, .container.with-interact {
+    .container {
         grid-template-columns: 1fr;
     }
 }

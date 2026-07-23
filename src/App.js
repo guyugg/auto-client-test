@@ -65,22 +65,6 @@ const gamePresets = {
     }
 };
 
-const getInteractUrl = (wsUrl) => {
-    if (!wsUrl) return '';
-    try {
-        let httpUrl = wsUrl.replace(/^ws:/i, 'http:').replace(/^wss:/i, 'https:');
-        const urlObj = new URL(httpUrl);
-        return `${urlObj.protocol}//${urlObj.host}/interact`;
-    } catch (e) {
-        const match = wsUrl.match(/^(?:ws:\/\/|wss:\/\/)?([^/]+)/i);
-        if (match) {
-            const protocol = wsUrl.startsWith('wss:') ? 'https:' : 'http:';
-            return `${protocol}//${match[1]}/interact`;
-        }
-        return '';
-    }
-};
-
 const buildWsUrlWithAuth = (wsUrl, account, password) => {
     if (!wsUrl) return '';
     try {
@@ -109,7 +93,6 @@ function App() {
     const [isTestRunning, setIsTestRunning] = useState(false);
     const [runningGameType, setRunningGameType] = useState('');
     const [autoScroll, setAutoScroll] = useState(true);
-    const [showInteract, setShowInteract] = useState(false);
     const [logs, setLogs] = useState([
         { id: 1, text: "[SYSTEM] 控制台已就緒，請在左側配置好參數後點擊「開始測試」。", type: "system" }
     ]);
@@ -321,14 +304,6 @@ function App() {
                     <div className="logo-title">AUTOMATION CONTROL PLATFORM</div>
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                    {/* 桌台互動控制按鈕 */}
-                    <button
-                        onClick={() => setShowInteract(prev => !prev)}
-                        className="console-btn"
-                        style={{ color: showInteract ? 'var(--accent-cyan)' : 'var(--text-main)', border: '1px solid var(--border-color)', background: 'rgba(255,255,255,0.05)' }}
-                    >
-                        <i className="fa-solid fa-desktop"></i> {showInteract ? '隱藏桌台互動' : '顯示桌台互動'}
-                    </button>
                     <div className="system-status">
                         <div className={`status-dot ${isTestRunning ? 'active' : ''}`}></div>
                         <span style={{ color: isTestRunning ? 'var(--accent-green)' : '' }}>
@@ -338,7 +313,7 @@ function App() {
                 </div>
             </header>
 
-            <div className={`container ${showInteract ? 'with-interact' : ''}`}>
+            <div className="container">
                 {/* Settings Panel */}
                 <div className="panel">
                     <div className="panel-title">
@@ -546,43 +521,7 @@ function App() {
                     </div>
                 </div>
 
-                {/* Interact Panel */}
-                {showInteract && (
-                    <div className="panel interact-panel" style={{ height: "calc(100vh - 120px)", minHeight: "500px", display: "flex", flexDirection: "column" }}>
-                        <div className="console-header">
-                            <div className="panel-title" style={{ border: "none", padding: 0, margin: 0 }}>
-                                <i className="fa-solid fa-desktop"></i> 桌台互動畫面
-                            </div>
-                            <div className="console-controls">
-                                {getInteractUrl(formData.websocketUrl) && (
-                                    <a
-                                        href={getInteractUrl(formData.websocketUrl)}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="console-btn"
-                                        style={{ textDecoration: "none" }}
-                                    >
-                                        <i className="fa-solid fa-up-right-from-square"></i> 新分頁開啟
-                                    </a>
-                                )}
-                            </div>
-                        </div>
-                        <div style={{ flexGrow: 1, position: "relative", background: "#ffffff", borderRadius: "12px", overflow: "hidden" }}>
-                            {getInteractUrl(formData.websocketUrl) ? (
-                                <iframe
-                                    src={getInteractUrl(formData.websocketUrl)}
-                                    title="桌台互動"
-                                    style={{ width: "100%", height: "100%", border: "none" }}
-                                    sandbox="allow-same-origin allow-scripts allow-forms allow-popups"
-                                />
-                            ) : (
-                                <div style={{ display: "flex", alignItems: "center", justifyContent: "center", height: "100%", color: "#9ca3af" }}>
-                                    請配置有效的 WebSocket URL
-                                </div>
-                            )}
-                        </div>
-                    </div>
-                )}
+
                 </div>
             </div>
 
